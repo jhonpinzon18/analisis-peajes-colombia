@@ -135,7 +135,7 @@ Este proyecto fue desarrollado como parte del curso de Big Data y Análisis de D
 ## Autor
 
 **Jhon Pinzón Rodriguez**  
-Universidad Nacional Abierta y a Distancia (UNAD)  
+Universidad Nacional Abierta y  a Distancia (UNAD)  
 jhpinzonr@unadvirtual.edu.co  
 [GitHub: @jhonpinzon18](https://github.com/jhonpinzon18)
 
