@@ -1,65 +1,69 @@
-# 🚗 Análisis de Peajes Colombia con Big Data
+# Análisis de Peajes en Colombia con Big Data
 
 [![Apache Spark](https://img.shields.io/badge/Apache%20Spark-3.x-E25A1C?style=flat&logo=apache-spark&logoColor=white)](https://spark.apache.org/)
 [![Hadoop](https://img.shields.io/badge/Hadoop-3.x-66CCFF?style=flat&logo=apache-hadoop&logoColor=black)](https://hadoop.apache.org/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 
-## 📖 Descripción
+## Descripción
 
-Proyecto de análisis de Big Data que procesa **98,306 registros** de transacciones de peajes en Colombia utilizando **Apache Spark (PySpark)** sobre **Hadoop HDFS**. Implementa un pipeline completo de procesamiento batch con limpieza, transformación y análisis exploratorio de datos.
+Este proyecto implementa un sistema de análisis de datos utilizando tecnologías de Big Data para procesar información de 98,306 transacciones de peajes en Colombia. El sistema utiliza Apache Spark (PySpark) sobre Hadoop HDFS para realizar procesamiento batch, incluyendo limpieza de datos, transformaciones y análisis exploratorio.
 
-## 🎯 Objetivo
+## Objetivos
 
-Extraer insights sobre patrones de tráfico, recaudación, evasión y tendencias temporales en la red de peajes de Colombia mediante procesamiento distribuido.
+El proyecto busca identificar patrones de tráfico vehicular, analizar la recaudación por peaje y categoría de vehículo, detectar comportamientos de evasión y examinar tendencias temporales en el uso de la red de peajes nacional.
 
 ---
 
-## 🗂️ Archivos de Resultados
+## Archivos Generados
+
+El procesamiento genera los siguientes archivos de resultados en HDFS:
 
 | Archivo | Descripción |
 |---------|-------------|
-| 📦 `datos_limpios.parquet/` | Dataset completo procesado (formato optimizado) |
-| 📄 `datos_limpios.csv/` | Dataset completo procesado (formato CSV) |
-| 🏢 `analisis_por_peaje.csv/` | Métricas agregadas por peaje (tráfico, recaudación, tarifas) |
-| 🚙 `analisis_por_categoria.csv/` | Análisis por categoría de vehículo (1-9) |
-| 📅 `analisis_temporal.csv/` | Tendencias por año y mes |
-| 📈 `resumen_estadistico.csv/` | Estadísticas descriptivas (media, min, max, desv. std) |
+| `datos_limpios.parquet/` | Dataset completo procesado en formato Parquet optimizado |
+| `datos_limpios.csv/` | Dataset completo procesado en formato CSV |
+| `analisis_por_peaje.csv/` | Métricas agregadas por peaje: tráfico, recaudación y tarifas promedio |
+| `analisis_por_categoria.csv/` | Análisis segmentado por las 9 categorías de vehículos |
+| `analisis_temporal.csv/` | Tendencias y patrones por año y mes |
+| `resumen_estadistico.csv/` | Estadísticas descriptivas del dataset |
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Tecnologías Utilizadas
 
-- **Apache Hadoop 3.x** - Sistema de archivos distribuido (HDFS)
-- **Apache Spark 3.x** - Motor de procesamiento distribuido
-- **PySpark 3.x** - API de Python para Spark
-- **Python 3.12** - Lenguaje de desarrollo
-- **Java 17** - Runtime para Hadoop/Spark
+- **Apache Hadoop 3.x** - Sistema de archivos distribuido (HDFS) y gestor de recursos (YARN)
+- **Apache Spark 3.x** - Motor de procesamiento distribuido en memoria
+- **PySpark 3.x** - API de Python para Apache Spark
+- **Python 3.12** - Lenguaje de programación principal
+- **Java 17** - Entorno de ejecución para Hadoop y Spark
 
 ---
 
-## 🚀 Cómo Ejecutar
+## Instrucciones de Ejecución
 
-### Pre-requisitos
-- Hadoop y Spark instalados y configurados
-- Dataset `peajes_colombia.csv` en HDFS (`/Tarea3/`)
+### Requisitos Previos
 
-### Ejecutar el Análisis
+Es necesario tener instalado y configurado Hadoop, Spark y Python. El dataset `peajes_colombia.csv` debe estar disponible en HDFS en la ruta `/Tarea3/`.
+
+### Ejecución del Análisis
 
 ```bash
-# 1. Iniciar servicios
+# Iniciar servicios de Hadoop
 start-dfs.sh && start-yarn.sh
 
-# 2. Verificar servicios
+# Verificar que los servicios estén activos
 jps
 
-# 3. Ejecutar análisis
+# Ejecutar el script de análisis
 spark-submit analisis_peajes.py
 
-# 4. Ver resultados
+# Revisar los resultados generados
 hdfs dfs -ls /Tarea3/Resultados_Peajes_Colombia/
 ```
 
-### Modo Interactivo
+### Ejecución en Modo Interactivo
+
+Para desarrollo o pruebas, se puede ejecutar el análisis en modo interactivo:
 
 ```bash
 pyspark
@@ -68,86 +72,79 @@ pyspark
 
 ---
 
-## 📊 Dataset
+## Características del Dataset
 
-- **Tamaño**: ~7 MB (98,306 registros)
-- **Campos**: IdPeaje, Peaje, IdCategoriaTarifa, FechaDesde, FechaHasta, ValorTarifa, Trafico, TraficoEvasores, TraficoExentos787
+El dataset contiene 98,306 registros con las siguientes columnas:
+
+- **IdPeaje**: Identificador único del peaje
+- **Peaje**: Nombre del peaje
+- **IdCategoriaTarifa**: Categoría del vehículo (1-9)
+- **FechaDesde** y **FechaHasta**: Período de vigencia de la tarifa
+- **ValorTarifa**: Valor de la tarifa en pesos colombianos
+- **Trafico**: Número de vehículos
+- **TraficoEvasores**: Vehículos que evadieron el pago
+- **TraficoExentos787**: Vehículos exentos según la Ley 787
 
 ---
 
-## 🔬 Procesamiento Realizado
+## Procesamiento Implementado
 
-### Limpieza
-- Eliminación de duplicados y valores nulos
-- Corrección de tipos de datos
-- Validación de integridad
+### Limpieza de Datos
+
+El proceso incluye eliminación de registros duplicados, tratamiento de valores nulos, corrección de tipos de datos y validación de la integridad de la información.
 
 ### Transformaciones
-- `TraficoTotal` = Trafico + TraficoEvasores + TraficoExentos787
-- `PorcentajeEvasion` = (TraficoEvasores / TraficoTotal) × 100
-- `RecaudacionEstimada` = Trafico × ValorTarifa
-- `TipoVehiculo` = Clasificación (Livianos/Pesados/Especiales)
 
-### Análisis (EDA)
-- Estadísticas descriptivas completas
-- Top 10 peajes por tráfico y recaudación
-- Distribución por categoría de vehículo
-- Análisis temporal (año/mes)
-- Tasas de evasión por peaje
+Se calculan nuevas columnas derivadas:
+- **TraficoTotal**: Suma de tráfico regular, evasores y exentos
+- **PorcentajeEvasion**: Proporción de vehículos que evadieron el pago
+- **RecaudacionEstimada**: Producto del tráfico por el valor de la tarifa
+- **TipoVehiculo**: Clasificación en livianos, pesados y especiales según la categoría
 
-### Técnicas Utilizadas
-- **DataFrames**: Operaciones SQL-like y agregaciones
-- **RDDs**: Transformaciones map-reduce personalizadas
-- **Particionamiento**: Optimización de lectura/escritura
+### Análisis Exploratorio
+
+El análisis incluye estadísticas descriptivas generales, identificación de los peajes con mayor tráfico y recaudación, distribución por categorías de vehículos, análisis de tendencias temporales y cálculo de tasas de evasión.
+
+### Técnicas de Procesamiento
+
+Se utilizan DataFrames de Spark para operaciones de agregación y consultas tipo SQL, junto con RDDs para transformaciones personalizadas tipo map-reduce cuando es necesario.
 
 ---
 
-## 📂 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
-├── analisis_peajes.py              # Script principal PySpark
-├── datos_limpios.parquet/          # Dataset procesado
-├── datos_limpios.csv/
-├── analisis_por_peaje.csv/
-├── analisis_por_categoria.csv/
-├── analisis_temporal.csv/
-└── resumen_estadistico.csv/
+analisis-peajes-colombia/
+├── analisis_peajes.py              # Script principal de PySpark
+├── datos_limpios.parquet/          # Dataset procesado (Parquet)
+├── datos_limpios.csv/              # Dataset procesado (CSV)
+├── analisis_por_peaje.csv/         # Métricas por peaje
+├── analisis_por_categoria.csv/     # Métricas por categoría
+├── analisis_temporal.csv/          # Análisis temporal
+└── resumen_estadistico.csv/        # Estadísticas descriptivas
 ```
 
 ---
 
-## 🎓 Contexto Académico
+## Contexto del Proyecto
 
-**Universidad Nacional Abierta y a Distancia (UNAD)**  
-Curso: Big Data y Análisis de Datos Distribuidos
-
-**Objetivos Cumplidos:**
-- ✅ Pipeline de procesamiento batch completo
-- ✅ Limpieza y transformación ETL
-- ✅ Análisis exploratorio con DataFrames y RDDs
-- ✅ Almacenamiento en HDFS
-- ✅ Versionamiento con Git
+Este proyecto fue desarrollado como parte del curso de Big Data y Análisis de Datos Distribuidos en la Universidad Nacional Abierta y a Distancia (UNAD). El trabajo demuestra la implementación de un pipeline completo de procesamiento batch, aplicando técnicas de ETL, análisis exploratorio y almacenamiento distribuido.
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Jhon Pinzón Rodriguez**  
-📧 jhpinzonr@unadvirtual.edu.co  
-🔗 [@jhonpinzon18](https://github.com/jhonpinzon18)
+Universidad Nacional Abierta y a Distancia (UNAD)  
+jhpinzonr@unadvirtual.edu.co  
+[GitHub: @jhonpinzon18](https://github.com/jhonpinzon18)
 
 ---
 
-## 📅 Proyecto
+## Información del Proyecto
 
 - **Fecha**: Octubre 2025
 - **Versión**: 1.0
-- **Estado**: ✅ Completo
+- **Estado**: Completo y funcional
 
 ---
-
-<div align="center">
-
-**⭐ Si este proyecto te fue útil, considera darle una estrella ⭐**
-
-</div>
